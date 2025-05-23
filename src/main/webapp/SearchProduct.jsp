@@ -47,7 +47,7 @@
             text-align: center;
         }
 
-        .info-message {
+        .info-message {git
             color: #31708f;
             background-color: #d9edf7;
             border-color: #bce8f1;

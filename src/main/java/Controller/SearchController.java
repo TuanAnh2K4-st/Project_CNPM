@@ -22,14 +22,25 @@ import java.util.regex.Pattern;
  */
 @WebServlet(name = "SearchController", value = "/search")
 public class SearchController extends HttpServlet {
-    // Pattern để kiểm tra từ khóa chứa ký tự đặc biệt
+    /**
+     * SearchController - Controller xử lý chức năng tìm kiếm sản phẩm
+     *
+     * Use Case: Tìm kiếm sản phẩm
+     * - Bước 5.1: Người dùng truy cập giao diện chính
+     * - Bước 5.2: Người dùng nhập từ khóa và submit form tìm kiếm
+     * - Bước 5.3-5.7: Hệ thống xử lý tìm kiếm và hiển thị kết quả
+     */
+    /**
+     * Pattern để kiểm tra từ khóa chứa ký tự đặc biệt
+     * Sử dụng trong luồng thay thế 2: Từ khóa chứa ký tự đặc biệt
+     */
     private static final Pattern SPECIAL_CHARS = Pattern.compile("[!@#$%^&*(),.?\":{}|<>]");
 
     /**
      * Xử lý request GET từ form tìm kiếm
      *
-     * Bước 5.1: Khi người dùng submit form tìm kiếm từ header.jsp
-     * Form gửi request GET với parameter "search" chứa từ khóa
+     * Bước 5.1-5.2: Khi người dùng submit form tìm kiếm từ header.jsp
+     * - Form gửi request GET đến URL "/search" với parameter "search"
      *
      * @param request  HTTP request chứa tham số tìm kiếm
      * @param response HTTP response
@@ -45,8 +56,17 @@ public class SearchController extends HttpServlet {
      * Xử lý chính cho việc tìm kiếm sản phẩm
      *
      * Bước 5.3: Hệ thống kiểm tra dữ liệu đầu vào
-     * Bước 5.4: Hệ thống thực hiện truy vấn CSDL theo tiêu chí tìm kiếm
-     * Bước 5.5: Hệ thống hiển thị danh sách sản phẩm phù hợp
+     * - Kiểm tra từ khóa rỗng (Luồng thay thế 1)
+     * - Kiểm tra từ khóa chứa ký tự đặc biệt (Luồng thay thế 2)
+     *
+     * Bước 5.4: Hệ thống thực hiện truy vấn CSDL
+     * - Gọi ProductDAO.searchByName() để tìm kiếm sản phẩm
+     * - Xử lý trường hợp không tìm thấy kết quả (Luồng thay thế 3)
+     *
+     * Bước 5.5: Hệ thống hiển thị danh sách sản phẩm
+     * - Đặt kết quả vào request attribute và forward đến JSP
+     *
+     * Xử lý ngoại lệ (Exception): Mất kết nối hoặc lỗi truy vấn CSDL
      *
      * @param request  HTTP request chứa tham số tìm kiếm
      * @param response HTTP response
