@@ -35,7 +35,29 @@
     <jsp:useBean id="a" class="DAO.ProductDAO" scope="request"></jsp:useBean>
     <jsp:useBean id="b" class="DAO.ProducerDAO" scope="request"></jsp:useBean>
     <jsp:useBean id="c" class="DAO.ProductTypeDAO" scope="request"></jsp:useBean>
+    <style>
+        .error-message {
+            color: #d9534f;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-align: center;
+        }
 
+        .info-message {
+            color: #31708f;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <!-- HEADER -->
@@ -47,36 +69,29 @@
 <!-- /MENU -->
 
 <!-- BREADCRUMB -->
-<div id="breadcrumb" class="section">
-    <!-- container -->
-    <div class="container">
-        <!-- row -->
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="breadcrumb-tree">
-                    <li><a href="index.jsp">Trang chủ</a></li>
-                    <li><a href="#">Danh mục sản phẩm</a></li>
-                </ul>
-            </div>
-        </div>
-        <!-- /row -->
-    </div>
-    <!-- /container -->
-</div>
-<!-- /BREADCRUMB -->
-
-<!-- SECTION -->
 <div class="section">
     <!-- container -->
     <div class="container">
         <!-- row -->
         <div class="row">
             <!-- store products -->
-
             <div id="content" class="row">
-                <!-- fullproduct -->
+                <!-- Hiển thị thông báo lỗi hoặc không tìm thấy kết quả nếu có -->
+                <c:if test="${not empty errorMessage}">
+                    <!-- Hiển thị thông báo lỗi - Luồng thay thế: Từ khóa không hợp lệ -->
+                    <div class="col-md-12">
+                        <div class="error-message">${errorMessage}</div>
+                    </div>
+                </c:if>
+                <c:if test="${not empty noResultsMessage}">
+                    <!-- Hiển thị thông báo không tìm thấy - Luồng thay thế: Không tìm thấy sản phẩm -->
+                    <div class="col-md-12">
+                        <div class="info-message">${noResultsMessage}</div>
+                    </div>
+                </c:if>
+                <!-- Bước 5.5: Hiển thị danh sách sản phẩm tìm thấy -->
                 <% if (data.size() >= 1) {%>
-                <% for (Product p : data){%>
+                <% for (Product p : data){ %>
                 <div class="col-md-4 col-xs-6">
                     <div class="product">
                         <div class="product-img">
@@ -84,6 +99,7 @@
                         </div>
                         <div class="product-body">
                             <p class="product-category"><%=p.getProducer().getName()%></p>
+                            <!-- Bước 5.6: Người dùng có thể chọn một sản phẩm để xem chi tiết -->
                             <h3 class="product-name"><a href="sanpham.jsp"><%=p.getName()%></a></h3>
                             <fmt:formatNumber value="<%=p.getPrice()%>" type="number"
                                               pattern="#,##0" var="formattedPrice"/>
@@ -93,29 +109,35 @@
                             <div class="product-btns">
                             </div>
                         </div>
+                        <!-- Bước 5.7: Người dùng có thể thêm sản phẩm vào giỏ hàng từ danh sách kết quả -->
                         <div class="add-to-cart">
                             <form action="addcart" method="post">
                                 <input type="hidden" name="id" value="<%= p.getId() %>">
                                 <button type="submit" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng</button>
                             </form>
                         </div>
-
                     </div>
                 </div>
-                <%}
-                }else {%>
-                <a style="margin-left: 300px" href="index.jsp">Rất tiếc, Phone Accessories không tìm thấy kết quả nào phù hợp với từ khóa.</a>
+                <% } %>
+                <% } else if (request.getAttribute("errorMessage") == null && request.getAttribute("noResultsMessage") == null) { %>
+                <!-- Hiển thị thông báo khi không có kết quả mà không phải do lỗi -->
+                <div class="col-md-12">
+                    <div class="info-message">
+                        Rất tiếc, Phone Accessories không tìm thấy kết quả nào phù hợp với từ khóa.
+                        <br>
+                        <a href="index.jsp" class="btn btn-primary mt-3">Quay lại trang chủ</a>
+                    </div>
+                </div>
                 <% } %>
             </div>
-            <!-- /fullproduct -->
-
-
+            <!-- /store products -->
         </div>
-        <!-- /store products -->
-
+        <!-- /row -->
     </div>
-    <!-- /STORE -->
+    <!-- /container -->
 </div>
+<!-- /SECTION -->
+<!-- ... phần footer ... -->
 <!-- /row -->
 <!-- /container -->
 <!-- /SECTION -->

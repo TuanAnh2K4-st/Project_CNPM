@@ -166,3 +166,70 @@
 	}
 
 })(jQuery);
+/**
+ * Search Form Handling
+ *
+ * Bước 5.3: Kiểm tra dữ liệu đầu vào
+ * Bước 5.5: Cải thiện hiển thị kết quả tìm kiếm
+ */
+$(document).ready(function() {
+	// Bước 5.3: Kiểm tra tính hợp lệ của form tìm kiếm
+	$('.header-search form').on('submit', function(e) {
+		var searchInput = $(this).find('input[name="search"]');
+		var searchValue = searchInput.val().trim();
+
+		// Luồng thay thế: Từ khóa không hợp lệ - kiểm tra từ khóa rỗng
+		if (searchValue === '') {
+			// Ngăn việc submit form
+			e.preventDefault();
+
+			// Hiển thị thông báo
+			alert('Vui lòng nhập từ khóa.');
+
+			// Focus vào ô input
+			searchInput.focus();
+			return;
+		}
+
+		// Kiểm tra từ khóa chứa ký tự đặc biệt
+		var specialChars = /[!@#$%^&*(),.?":{}|<>]/;
+		if (specialChars.test(searchValue)) {
+			// Ngăn việc submit form
+			e.preventDefault();
+
+			// Hiển thị thông báo
+			alert('Từ khóa không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt.');
+
+			// Focus vào ô input
+			searchInput.focus();
+		}
+	});
+
+	// Bước 5.5: Highlight từ khóa tìm kiếm trong kết quả hiển thị
+	if (window.location.pathname.indexOf('search') > -1) {
+		// Lấy từ khóa tìm kiếm từ URL
+		var searchQuery = new URLSearchParams(window.location.search).get('search');
+
+		if (searchQuery) {
+			// Tách từ khóa thành các từ
+			var searchTerms = searchQuery.split(/\s+/);
+
+			// Highlight mỗi từ trong tên sản phẩm
+			$('.product-name a').each(function() {
+				var text = $(this).text();
+
+				searchTerms.forEach(function(term) {
+					if (term.length > 2) { // Chỉ highlight từ có 3+ ký tự
+						var regex = new RegExp('(' + term + ')', 'gi');
+						text = text.replace(regex, '<span class="highlight">$1</span>');
+					}
+				});
+
+				$(this).html(text);
+			});
+
+			// Thêm style highlight
+			$('<style>.highlight { background-color: #ffff99; }</style>').appendTo('head');
+		}
+	}
+});
