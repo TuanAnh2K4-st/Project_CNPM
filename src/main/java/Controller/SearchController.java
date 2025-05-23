@@ -104,7 +104,7 @@ public class SearchController extends HttpServlet {
                 // Luồng thay thế: Không tìm thấy sản phẩm
                 if (list.isEmpty()) {
                     request.setAttribute("noResultsMessage",
-                            "Không tìm thấy sản phẩm phù hợp với tìm kiếm của bạn.");
+                            "Không tìm thấy sản phẩm phù hợp.");
                 }
             }
         } catch (Exception e) {
