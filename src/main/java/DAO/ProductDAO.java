@@ -109,6 +109,21 @@ public class ProductDAO implements DAOInterface<Product> {
         return product.isEmpty() ? null : product.get();
     }
 
+    /**
+     * Tìm kiếm sản phẩm theo tên
+     *
+     * Bước 5.4: Hệ thống thực hiện truy vấn CSDL theo tiêu chí tìm kiếm
+     * - Kiểm tra và xử lý từ khóa đầu vào
+     * - Tách từ khóa thành các từ riêng biệt
+     * - Xây dựng câu truy vấn SQL với điều kiện LIKE
+     * - Thực thi truy vấn và trả về danh sách sản phẩm
+     *
+     * Sử dụng trong luồng chính và có thể trả về danh sách rỗng
+     * cho Luồng thay thế 3: Không tìm thấy sản phẩm
+     *
+     * @param text Chuỗi từ khóa tìm kiếm do người dùng nhập ở bước 5.2
+     * @return Danh sách sản phẩm thỏa mãn điều kiện tìm kiếm, có thể rỗng
+     */
     public static List<Product> searchByName(String text) {
         List<Product> products = JDBIConector.me().withHandle(handle -> {
             List<Product> list = new ArrayList<>();
